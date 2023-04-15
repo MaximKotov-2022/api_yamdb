@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.conf import settings
 
 
 class User(AbstractUser):
@@ -13,12 +14,12 @@ class User(AbstractUser):
     )
     email = models.EmailField(
         'Электронная почта',
-        max_length=150,
+        max_length=settings.EMAIL_MAX_LENGTH,
         unique=True
     )
     role = models.CharField(
         'Роль',
-        max_length=20,
+        max_length=settings.ROLE_MAX_LENGTH,
         choices=ROLE_CHOICES,
         default=USER,
     )
@@ -42,8 +43,10 @@ class User(AbstractUser):
         return self.role == self.USER
 
     class Meta:
-        ordering = ('username',)
-
-        def __str__(self):
-            return self.username
-
+        constraints = [
+            models.UniqueConstraint(fields=('username', 'email'),
+                                    name='unique_username_email')
+        ]
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
+        ordering = ('username', )
