@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import filters, viewsets
 from rest_framework.pagination import LimitOffsetPagination
 
+from api.permissions import IsAdminOrReadOnly
 from api.serializers import (CategorySerializer, GenreSerializer,
                              TitleSerializer
                             )
@@ -15,6 +16,7 @@ class TitleViewSet(viewsets.ModelViewSet):
     serializer_class = TitleSerializer
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
+    permission_classes = (IsAdminOrReadOnly,)
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -24,6 +26,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
     serializer_class = CategorySerializer
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
+    permission_classes = (IsAdminOrReadOnly,)
     
 
 
@@ -34,4 +37,5 @@ class GenreViewSet(viewsets.ModelViewSet):
     serializer_class = GenreSerializer
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
+    permission_classes = (IsAdminOrReadOnly,)
     
