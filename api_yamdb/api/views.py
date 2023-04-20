@@ -4,12 +4,18 @@ from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action, api_view, permission_classes
-from rest_framework.pagination import PageNumberPagination
+from rest_framework.pagination import (LimitOffsetPagination,
+                                       PageNumberPagination)
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
 
+from api.permissions import IsAdminOrReadOnly
+from api.serializers import (CategorySerializer, GenreSerializer,
+                             TitleSerializer)
+from reviews.models import Category, Genre, Title
 from users.models import User
+
 from .permissions import IsAdminOrSuperuser
 from .serializers import SignUpSerializer, TokenSerializer, UserSerializer
 
@@ -85,3 +91,32 @@ def create_token(request):
     return Response({
         'confirmation code': 'Некорректный код подтверждения!'},
         status=status.HTTP_400_BAD_REQUEST)
+
+
+class TitleViewSet(viewsets.ModelViewSet):
+    '''Произведения.'''
+    queryset = Title.objects.all()
+    serializer_class = TitleSerializer
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name',)
+    permission_classes = (IsAdminOrReadOnly,)
+
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    '''Категории.'''
+    queryset = Category.objects.all()
+    pagination_class = LimitOffsetPagination
+    serializer_class = CategorySerializer
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name',)
+    permission_classes = (IsAdminOrReadOnly,)
+
+
+class GenreViewSet(viewsets.ModelViewSet):
+    '''Жанры.'''
+    queryset = Genre.objects.all()
+    pagination_class = LimitOffsetPagination
+    serializer_class = GenreSerializer
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name',)
+    permission_classes = (IsAdminOrReadOnly,)
