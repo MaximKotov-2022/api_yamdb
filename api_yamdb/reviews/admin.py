@@ -1,13 +1,12 @@
 from django.contrib import admin
 
-from reviews.models import  Title, Category, Genre
+from reviews.models import Title, Category, Genre
 
 
 class TitleAdmin(admin.ModelAdmin):
     list_display = ('pk', 'name', 'year', 'category',)
-    list_display_links = ('name')
+    list_display_links = ('name',)
     list_editable = ('category',)
-    list_filter = ('genre', 'category')
     empty_value_display = '-пусто-'
     search_fields = ('name',)
 

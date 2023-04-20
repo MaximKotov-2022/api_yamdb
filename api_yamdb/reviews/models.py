@@ -1,17 +1,44 @@
 from django.db import models
 
-from validators import validate_year
+from .validators import validate_year
+
+
+class Category(models.Model):
+    '''Категории.'''
+    name = models.CharField(
+        max_length=256,
+    )
+    slug = models.SlugField(
+        max_length=50,
+        unique=True,
+        db_index=True,
+    )
+
+    class Meta:
+        ordering = ('name',)
+
+    def __str__(self) -> str:
+        return self.slug[:10]
+
+
+class Genre(models.Model):
+    '''Жанры'''
+    name = models.CharField(max_length=256,)
+    slug = models.SlugField(max_length=50, unique=True,)
+
+    def __str__(self) -> str:
+        return self.slug[:10]
 
 
 class Title(models.Model):
     '''Произведения.'''
     name = models.CharField(
-        max_length=100,
+        max_length=256,
         db_index=True,
     )
     year = models.IntegerField(
         db_index=True,
-        validators=validate_year,
+        validators=[validate_year],
     )
 
     category = models.ForeignKey(
@@ -28,33 +55,6 @@ class Title(models.Model):
 
     def __str__(self) -> str:
         return self.name[:10]
-    
-
-class Category(models.Model):
-    '''Категории.'''
-    name = models.CharField(
-        max_length=100,
-    )
-    slug = models.SlugField(
-        max_length=100,
-        unique=True,
-        db_index=True,
-    )
-
-    class Meta:
-        ordering = ('name',)
-
-    def __str__(self) -> str:
-        return self.slug[:10]
-
-
-class Genre(models.Model):
-    '''Жанры'''
-    name = models.CharField(max_length=200,)
-    slug = models.SlugField(max_length=100, unique=True,)
-
-    def __str__(self) -> str:
-        return self.slug[:10]
 
 
 class GenreTitle(models.Model):

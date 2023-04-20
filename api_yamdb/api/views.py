@@ -1,11 +1,9 @@
-from django.shortcuts import get_object_or_404
 from rest_framework import filters, viewsets
 from rest_framework.pagination import LimitOffsetPagination
 
 from api.permissions import IsAdminOrReadOnly
 from api.serializers import (CategorySerializer, GenreSerializer,
-                             TitleSerializer
-                            )
+                             TitleSerializer)
 
 from reviews.models import Category, Genre, Title
 
@@ -27,7 +25,6 @@ class CategoryViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
     permission_classes = (IsAdminOrReadOnly,)
-    
 
 
 class GenreViewSet(viewsets.ModelViewSet):
@@ -38,4 +35,3 @@ class GenreViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
     permission_classes = (IsAdminOrReadOnly,)
-    
