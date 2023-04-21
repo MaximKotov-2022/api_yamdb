@@ -53,6 +53,7 @@ class Title(models.Model):
         on_delete=models.SET_NULL,
         db_index=True,
     )
+    description = models.TextField(null=True)
 
     class Meta:
         ordering = ('name',)

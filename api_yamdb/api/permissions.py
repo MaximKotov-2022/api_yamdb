@@ -16,12 +16,10 @@ class IsAdminOrReadOnly(permissions.BasePermission):
                 or request.method in permissions.SAFE_METHODS
                 )
 
-# --------------------------------------------
-
 
 class IsAuthorPermission(permissions.BasePermission):
     message = (
-        'Only Author, Moderator, Admin or Superuser is allowed to access.')
+        'Доступ разрешен автору/модератору/администратору/суперпользователю.')
 
     def has_permission(self, request, view):
         return (request.method in permissions.SAFE_METHODS
@@ -35,7 +33,7 @@ class IsAuthorPermission(permissions.BasePermission):
 
 
 class IsAdminPermission(permissions.BasePermission):
-    message = 'Only Admin or Superuser is allowed to access.'
+    message = 'Доступ разрешен только администратору или суперпользователю.'
 
     def has_permission(self, request, view):
         return (request.user.is_authenticated
@@ -43,7 +41,7 @@ class IsAdminPermission(permissions.BasePermission):
 
 
 class IsReadOnlyPermission(permissions.BasePermission):
-    message = 'Only Admin or Superuser is allowed to access.'
+    message = 'Доступ разрешен только администратору или суперпользователю.'
 
     def has_permission(self, request, view):
         return request.method in permissions.SAFE_METHODS
