@@ -41,7 +41,10 @@ class Title(models.Model):
         db_index=True,
         validators=[validate_year],
     )
-
+    genre = models.ManyToManyField(
+        Genre,
+        blank=True,
+    )
     category = models.ForeignKey(
         'Category',
         related_name='titles',

@@ -1,5 +1,6 @@
 import datetime
 from django.conf import settings
+from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from reviews.models import (Category, Genre, Title, Comment,
                             GenreTitle, Review,
@@ -76,8 +77,8 @@ class GenreSerializer(serializers.ModelSerializer):
 
 class TitlesSerializer(serializers.ModelSerializer):
     category = CategorySerializer(many=False)
-    genre = GenreSerializer()
-    rating = serializers.IntegerField()
+    genre = GenreSerializer(many=True)
+    rating = serializers.FloatField()
 
     class Meta:
         model = Title
@@ -138,32 +139,29 @@ class TitlesCreateUpdateSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-    author = serializers.SlugRelatedField(
-        slug_field='username',
-        read_only=True,
-    )
-
-    def create(self, validated_data):
-        if Review.objects.filter(
-            author=self.context['request'].user,
-            title=validated_data.get('title')
-        ).exists():
-            raise serializers.ValidationError(
-                'Нельзя оставить больше одного обзора.')
-
-        return Review.objects.create(**validated_data,)
+    author = serializers.StringRelatedField()
 
     class Meta:
+        fields = ("id", "text", "author", "score", "pub_date")
         model = Review
-        exclude = ('title',)
+
+    def validate(self, obj):
+        title_id = self.context['view'].kwargs.get('title_id')
+        request = self.context['request']
+        title = get_object_or_404(Title, id=title_id)
+        if request.method == 'POST':
+            if Review.objects.filter(
+                author=request.user, title=title
+            ).exists():
+                raise serializers.ValidationError(
+                    'Вы уже оставля свое ревью к этому тайтлу'
+                )
+        return obj
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    author = serializers.SlugRelatedField(
-        slug_field='username',
-        read_only=True,
-    )
+    author = serializers.StringRelatedField()
 
     class Meta:
+        fields = ("id", "text", "author", "pub_date")
         model = Comment
-        exclude = ('review',)
