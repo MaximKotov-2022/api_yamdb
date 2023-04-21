@@ -19,6 +19,8 @@ from users.models import User
 from .permissions import IsAdminOrSuperuser
 from .serializers import SignUpSerializer, TokenSerializer, UserSerializer
 
+from .mixins import ListCreateDeleteMixin
+
 
 class UserViewSet(viewsets.ModelViewSet):
     """ViewSet модели User."""
@@ -102,17 +104,19 @@ class TitleViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAdminOrReadOnly,)
 
 
-class CategoryViewSet(viewsets.ModelViewSet):
+class CategoryViewSet(ListCreateDeleteMixin):
     '''Категории.'''
     queryset = Category.objects.all()
     pagination_class = LimitOffsetPagination
     serializer_class = CategorySerializer
     filter_backends = (filters.SearchFilter,)
-    search_fields = ('name',)
+    search_fields = ('name', 'slug')
     permission_classes = (IsAdminOrReadOnly,)
+    lookup_field = 'slug'
 
 
-class GenreViewSet(viewsets.ModelViewSet):
+class GenreViewSet(ListCreateDeleteMixin
+):
     '''Жанры.'''
     queryset = Genre.objects.all()
     pagination_class = LimitOffsetPagination
@@ -120,3 +124,4 @@ class GenreViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
     permission_classes = (IsAdminOrReadOnly,)
+    lookup_field = 'slug'

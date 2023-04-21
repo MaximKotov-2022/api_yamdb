@@ -33,7 +33,7 @@ class Genre(models.Model):
 class Title(models.Model):
     '''Произведения.'''
     name = models.CharField(
-        max_length=256,
+        max_length=100,
         db_index=True,
     )
     year = models.IntegerField(
