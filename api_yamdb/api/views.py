@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.pagination import (LimitOffsetPagination,
@@ -101,6 +102,7 @@ def create_token(request):
 class TitlesViewSet(TitleReviewCommentViewSet):
     permission_classes = [IsReadOnlyPermission | IsAdminPermission]
     pagination_class = PageNumberPagination
+    filter_backends = (DjangoFilterBackend,)
     filterset_class = TitlesFilter
 
     def get_serializer_class(self):
@@ -108,12 +110,6 @@ class TitlesViewSet(TitleReviewCommentViewSet):
             return TitlesCreateUpdateSerializer
 
         return TitlesSerializer
-
-    def get_queryset(self):
-        if self.action in ['list', 'retrieve']:
-            return Title.objects.annotate(rating=Avg('reviews__score'))
-
-        return Title.objects.all()
 
     def get_queryset(self):
         if self.action in ['list', 'retrieve']:
@@ -155,7 +151,6 @@ class CategoryViewSet(ListCreateDeleteMixin):
 class GenreViewSet(ListCreateDeleteMixin):
     '''Жанры.'''
     queryset = Genre.objects.all()
-    pagination_class = LimitOffsetPagination
     serializer_class = GenreSerializer
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
