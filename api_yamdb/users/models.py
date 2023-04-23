@@ -12,6 +12,7 @@ class User(AbstractUser):
         (MODERATOR, 'Модератор'),
         (ADMIN, 'Администратор'),
     )
+    ROLE_CHOICES_MAX_LENGTH = max(len(choice[0]) for choice in ROLE_CHOICES)
     email = models.EmailField(
         'Электронная почта',
         max_length=settings.EMAIL_MAX_LENGTH,
@@ -19,7 +20,7 @@ class User(AbstractUser):
     )
     role = models.CharField(
         'Роль',
-        max_length=settings.ROLE_MAX_LENGTH,
+        max_length=ROLE_CHOICES_MAX_LENGTH,
         choices=ROLE_CHOICES,
         default=USER,
     )
@@ -30,17 +31,17 @@ class User(AbstractUser):
     @property
     def is_admin(self):
         """Проверка пользователя на наличие прав администратора."""
-        return self.role == self.ADMIN or self.is_superuser
+        return self.role in [self.ADMIN, self.is_superuser]
 
     @property
     def is_moderator(self):
         """Проверка пользователя на наличие прав модератора."""
-        return self.role == self.MODERATOR
+        return self.role in [self.MODERATOR, self.ADMIN, self.is_superuser]
 
     @property
     def is_user(self):
         """Проверка пользователя на наличие стандартных прав."""
-        return self.role == self.USER
+        return self.role in [self.USER]
 
     class Meta:
         constraints = [
