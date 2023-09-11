@@ -71,3 +71,5 @@ python3 manage.py runserver
 
 ## Авторы
 + **Котов Максим** [MaximKotov-2022](https://github.com/MaximKotov-2022)
++ **Решетников Максим** [maskik25](https://github.com/maskik25)
++ **Мисербиев Сергей** [MiserbievSS](https://github.com/MiserbievSS)
